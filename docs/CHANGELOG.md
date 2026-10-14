@@ -10,3 +10,6 @@ Added independent input-driven AI with corner braking, traffic/passing/defending
 
 ## Phase 3 — dynamics
 Replaced foundation steering approximation with force/yaw integration, four tire loads, combined force limits, transfer, automatic engine/gear model, functional setup/compound/livery selections, bounded ERS and eligible DRS flap/aero. Published numerical/model limitations; fixed AI regressions before advancing.
+
+## Phase 4
+GP weekend with qualifying grid, time penalties, flags/virtual safety car, shared-geometry pit lane, limiter/service/compound changes and tested AI pit entry/exit. Published simplified rules in settings and architecture.

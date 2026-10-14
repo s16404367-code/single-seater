@@ -6,19 +6,19 @@ export const skills:Record<Difficulty,{grip:number;reaction:number;consistency:n
 export class Driver {
  lane=0;desiredLane=0;decision=0;input=idleInput();pace=60;stuck=0;reverseFor=0;passes=0;passTarget=-1;attempts=0;recoveries=0;offTrack=0;lastS=0;state='racing';
  constructor(public id:number,public difficulty:Difficulty='Pro'){}
- update(c:Car,cars:Car[],dt:number,time:number):Input {
+ update(c:Car,cars:Car[],dt:number,time:number,allowPassing=true):Input {
   const p=track.project(c),skill=skills[this.difficulty],speed=Math.abs(c.speed);if(Math.abs(p.offset)>10)this.offTrack+=dt;
   if(speed<1.5&&time>9)this.stuck+=dt;else this.stuck=0;
   if(this.stuck>2.5&&this.reverseFor<=0){this.reverseFor=1.6;this.stuck=0;this.recoveries++;}
   if(this.reverseFor>0){this.reverseFor-=dt;this.state='recovering';return {...idleInput(),reverse:true,steer:-Math.sign(angle(p.heading-c.heading))};}
-  this.decision-=dt;
+  if(!allowPassing){this.desiredLane=0;this.passTarget=-1;}this.decision-=dt;
   if(this.decision<=0){this.decision=skill.reaction;this.desiredLane=this.passTarget>=0?this.desiredLane:0;this.state='racing';
     let ahead:Car|undefined,near=Infinity;for(const other of cars){if(other.id===c.id)continue;const diff=mod(other.distance-p.s+track.length/2,track.length)-track.length/2;if(diff>0&&diff<55&&diff<near){ahead=other;near=diff;}}
-    if(ahead&&near<48&&(c.speed>ahead.speed+.5||near<22)&&Math.abs(p.curvature)<.008){
+    if(allowPassing&&ahead&&near<48&&(c.speed>ahead.speed+.5||near<22)&&Math.abs(p.curvature)<.008){
       const side=this.passTarget===ahead.id?Math.sign(this.desiredLane)||1:ahead.offset>=0?-1:1,lane=side*3.6,blocked=cars.some(o=>o.id!==c.id&&o.id!==ahead!.id&&Math.abs(mod(o.distance-p.s+track.length/2,track.length)-track.length/2)<16&&Math.abs(o.offset-lane)<2.8);
       if(!blocked){this.desiredLane=lane;this.state='passing';if(this.passTarget!==ahead.id){this.passTarget=ahead.id;this.attempts++;}}
     }
-    if(!ahead&&Math.abs(p.curvature)<.008){const behind=cars.find(o=>o.id!==c.id&&mod(p.s-o.distance,track.length)<22&&o.speed>c.speed+.5);if(behind){this.desiredLane=clamp(behind.offset,-1.5,1.5);this.state='defending';}}
+    if(allowPassing&&!ahead&&Math.abs(p.curvature)<.008){const behind=cars.find(o=>o.id!==c.id&&mod(p.s-o.distance,track.length)<22&&o.speed>c.speed+.5);if(behind){this.desiredLane=clamp(behind.offset,-1.5,1.5);this.state='defending';}}
     if(this.passTarget>=0){const target=cars.find(o=>o.id===this.passTarget);if(target&&mod(p.s-target.distance,track.length)<15){this.passes++;this.passTarget=-1;this.desiredLane=0;}}
     const variation=1-skill.consistency*(.5+.5*Math.sin(time*.37+this.id*2.31));let target=76;
     for(let d=0;d<=180;d+=10){const k=Math.abs(track.at(p.s+d).curvature);const corner=Math.sqrt(skill.grip*variation*(1-c.wetness*.57)*(1-c.tires[0].wear*.4)/Math.max(.001,k));target=Math.min(target,Math.sqrt(corner*corner+2*6.5*d));}

@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {pit} from './pit';
 import {track} from './track';
 import {rng} from './math';
 import {carModel} from './car-model';
@@ -22,7 +23,7 @@ export class World {
     const random=rng(42);const tree=new T.InstancedMesh(new T.ConeGeometry(4,15,7),new T.MeshStandardMaterial({color:0x304b38,roughness:1}),420);let n=0;
     for(let attempt=0;n<420&&attempt<4000;attempt++){const x=random()*1900-450,z=random()*1700-800;if(track.project({x,z}).distance<50)continue;d.position.set(x,6,z);d.rotation.set(0,random()*6,0);d.scale.setScalar(.65+random()*.65);d.updateMatrix();tree.setMatrixAt(n++,d.matrix);}tree.count=n;tree.castShadow=true;this.scene.add(tree);
     for(let i=0;i<35;i++){const theta=i/35*Math.PI*2;const mountain=new T.Mesh(new T.ConeGeometry(180+random()*170,170+random()*220,5),new T.MeshStandardMaterial({color:new T.Color().setHSL(.27,.12,.32+random()*.1),flatShading:true,roughness:1}));mountain.position.set(450+Math.sin(theta)*1900,30,Math.cos(theta)*1800);mountain.rotation.y=random()*6;this.scene.add(mountain);}
-    this.startFinish();this.buildings();this.setQuality('high');this.resize();window.addEventListener('resize',()=>this.resize());
+    this.startFinish();this.buildings();this.pitLane();this.setQuality('high');this.resize();window.addEventListener('resize',()=>this.resize());
   }
   ribbon(a:number,b:number,color:number,y:number){const verts:number[]=[];for(let i=0;i<track.count;i++){const p=track.at(i*track.step,a),q=track.at(i*track.step,b),r=track.at((i+1)*track.step,a),s=track.at((i+1)*track.step,b);for(const v of [p,r,q,q,r,s])verts.push(v.x,y,v.z);}const geo=new T.BufferGeometry();geo.setAttribute('position',new T.Float32BufferAttribute(verts,3));geo.computeVertexNormals();const mesh=new T.Mesh(geo,new T.MeshStandardMaterial({color,roughness:.94,side:T.DoubleSide}));mesh.receiveShadow=true;this.scene.add(mesh);}
   segment(i:number,n:number,a:number,b:number,y:number,mat:T.Material){const p=track.at(i*track.step,a),q=track.at(i*track.step,b),r=track.at((i+n)*track.step,a),s=track.at((i+n)*track.step,b);const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute([p.x,y,p.z,r.x,y,r.z,q.x,y,q.z,q.x,y,q.z,r.x,y,r.z,s.x,y,s.z],3));g.computeVertexNormals();const m=new T.Mesh(g,mat);m.receiveShadow=true;this.scene.add(m);}
@@ -38,6 +39,8 @@ export class World {
     for(const s of [140,400,1550,2650]){const at=track.at(s,48),stand=new T.Group();stand.position.set(at.x,0,at.z);stand.rotation.y=at.heading;for(let row=0;row<8;row++){const mesh=new T.Mesh(new T.BoxGeometry(2,1,65),new T.MeshStandardMaterial({color:row%2?0xa62d2c:0xebe6d9}));mesh.position.set(row*1.8,row*.85+1,0);mesh.castShadow=true;stand.add(mesh);}const roof=new T.Mesh(new T.BoxGeometry(22,.35,72),new T.MeshStandardMaterial({color:0xdfe4de,metalness:.5,roughness:.5}));roof.position.set(7,10,0);stand.add(roof);this.scene.add(stand);}
     for(let s=250;s<track.length;s+=160){const at=track.at(s,20);const board=this.textBoard(s%320===250?'APEX GP':'PURE RACING',12,1.8);board.position.set(at.x,1.4,at.z);board.rotation.y=at.heading;this.scene.add(board);}
   }
+
+  pitLane(){const mat=new T.MeshStandardMaterial({color:0x3e4548,roughness:.9,side:T.DoubleSide});for(let s=track.length-150;s<track.length+210;s+=track.step){const off=pit.offset(s%track.length);this.segment(s/track.step,1,off-2.5,off+2.5,.08,mat);}for(let i=0;i<9;i++){const p=track.at(pit.boxStart+i*12,-15);const mark=new T.Mesh(new T.PlaneGeometry(4,6),new T.MeshStandardMaterial({color:i===0?0xc24935:0xbbb892,roughness:.9}));mark.position.set(p.x,.085,p.z);mark.rotation.set(-Math.PI/2,0,-p.heading);this.scene.add(mark);}const p=track.at(track.length-130,-20),sign=this.textBoard('PIT  /  80',8,1.8);sign.position.set(p.x,2,p.z);sign.rotation.y=p.heading;this.scene.add(sign);}
   setCars(cars:Car[]){for(const [id,model] of this.models){{this.scene.remove(model);model.traverse(o=>{if(o instanceof T.Mesh){o.geometry.dispose();const mats=Array.isArray(o.material)?o.material:[o.material];mats.forEach(m=>m.dispose());}});this.models.delete(id);}}for(const c of cars){if(!this.models.has(c.id)){const model=carModel(c.color,c.compound);this.models.set(c.id,model);this.scene.add(model);}}}
   setQuality(q:Quality){this.quality=q;this.renderer.setPixelRatio(Math.min(devicePixelRatio,q==='low'?1:q==='medium'?1.5:2));this.renderer.shadowMap.enabled=q!=='low';this.sun.shadow.mapSize.setScalar(q==='high'?2048:1024);this.sun.shadow.map?.dispose();this.sun.shadow.map=null;this.resize();}
   resize(){const w=window.innerWidth,h=window.innerHeight;this.camera.aspect=w/h;this.camera.updateProjectionMatrix();this.renderer.setSize(w,h);}

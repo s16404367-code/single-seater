@@ -1,5 +1,6 @@
 import {angle,clamp} from './math';
 import {type Track,track} from './track';
+import {pit} from './pit';
 import {packages,compounds,type Setup,type Compound} from './setup';
 export interface Input {throttle:number;brake:number;steer:number;reverse:boolean;ers:boolean;drs:boolean}
 export const idleInput=():Input=>({throttle:0,brake:0,steer:0,reverse:false,ers:false,drs:false});
@@ -14,7 +15,7 @@ export function stepCar(c:Car,input:Input,dt:number,t:Track=track){
  if(!(dt>0&&dt<=.05))return;
  if(dt>1/120+.00001){const n=Math.ceil(dt*120);for(let i=0;i<n;i++)stepCar(c,input,dt/n,t);return;}
  c.input={throttle:clamp(Number.isFinite(input.throttle)?input.throttle:0,0,1),brake:clamp(Number.isFinite(input.brake)?input.brake:0,0,1),steer:clamp(Number.isFinite(input.steer)?input.steer:0,-1,1),reverse:input.reverse,ers:input.ers,drs:input.drs};input=c.input;
- const p=t.project(c);c.distance=p.s;c.offset=p.offset;c.surface=t.surface(p.offset);c.lastImpact=0;
+ const p=t.project(c);c.distance=p.s;c.offset=p.offset;c.surface=pit.contains(p.s,p.offset)?'asphalt':t.surface(p.offset);c.lastImpact=0;
  const sn=Math.sin(c.heading),cs=Math.cos(c.heading);let u=c.vx*sn+c.vz*cs,v=c.vx*cs-c.vz*sn;const speed=Math.abs(u),road=c.surface==='asphalt'||c.surface==='kerb';
  c.steer+=(input.steer*.48/(1+speed*.028)-c.steer)*Math.min(1,dt*9);
  c.drsActive=input.drs&&speed>25&&Math.abs(p.curvature)<.0025&&Math.abs(p.offset)<8&&input.brake<.1&&c.wetness<.25;
