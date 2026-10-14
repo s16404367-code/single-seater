@@ -4,8 +4,8 @@
 |0 audit|Complete|All 17 files read; source absence confirmed by owner; GitHub metadata inspected|
 |1 foundation|Local gate PASS; public hosting BLOCKED externally|Controllable rendered circuit, physics, timing, production subpath, browser checks|
 |2 racing/AI|Local gate PASS|3/5/8 independent rivals, full race, contact, timing, passing|
-|3 dynamics|In progress|Force, tire, aero, energy and wet tests; AI regression|
-|4 race weekend|Not started|Session, rules, flags, pits, classification tests|
+|3 dynamics|Local simplified-model gate PASS|Force, tire, aero, energy and wet tests; AI regression|
+|4 race weekend|In progress|Session, rules, flags, pits, classification tests|
 |5 environment/damage|Not started|Meaningful wetting/damage; graphics and recovery regression|
 |6 garage/telemetry|Not started|Functional adjustments, bounded data, explainable local tips|
 |7 modes/accessibility|Not started|Scoring, saves, ghost, input/accessibility tests|

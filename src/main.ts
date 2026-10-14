@@ -4,13 +4,14 @@ import {World,type Quality} from './world';
 import {Controls} from './input';
 import {EngineAudio} from './audio';
 import {el,updateHUD,updateRacingHUD,showResults} from './ui';
+import type {Package,Compound} from './setup';
 import type {Difficulty} from './ai';
 import {load,save} from './storage';
 declare const __BUILD__:{revision:string;sourceHash:string;builtAt:string;dirty:boolean};
 const race=new Race(),controls=new Controls(),audio=new EngineAudio();let world:World;let mode:'practice'|'race'='practice';let previous=performance.now(),accumulator=0,uiTime=0;
 el('build-id').textContent=`BUILD ${__BUILD__.sourceHash.slice(0,8)} / ${__BUILD__.revision}${__BUILD__.dirty?' + LOCAL CHANGES':''}`;
 function showState(){if(race.state==='driving'||race.state==='countdown')(document.activeElement as HTMLElement)?.blur();el('menu').hidden=race.state!=='menu';el('hud').hidden=race.state==='menu';el('pause').hidden=race.state!=='paused';el('session-label').textContent=race.state==='menu'?'PADDOCK':'ON TRACK';}
-function start(){audio.start();controls.clear();race.start({mode,opponents:Number(el<HTMLSelectElement>('opponents').value) as 3|5|8,laps:Number(el<HTMLSelectElement>('laps').value),difficulty:el<HTMLSelectElement>('difficulty').value as Difficulty});world.setCars(race.cars);showState();el('start').blur();}
+function start(){audio.start();controls.clear();race.start({mode,opponents:Number(el<HTMLSelectElement>('opponents').value) as 3|5|8,laps:Number(el<HTMLSelectElement>('laps').value),difficulty:el<HTMLSelectElement>('difficulty').value as Difficulty,package:el<HTMLSelectElement>('package').value as Package,compound:el<HTMLSelectElement>('compound').value as Compound,livery:Number(el<HTMLSelectElement>('livery').value)});world.setCars(race.cars);showState();el('start').blur();}
 function setQuality(q:string){if(!['low','medium','high'].includes(q))q='medium';world.setQuality(q as Quality);el<HTMLSelectElement>('quality').value=q;el<HTMLSelectElement>('settings-quality').value=q;save('quality',q);}
 try {
   world=new World(el('scene'));world.setCars(race.cars);setQuality(load('quality','high'));

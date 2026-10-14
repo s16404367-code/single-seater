@@ -7,3 +7,6 @@ Original car/circuit/world, fixed-step physics, freely controlled player, lap/se
 
 ## Phase 2 — racing
 Added independent input-driven AI with corner braking, traffic/passing/defending and non-teleport recovery; Rookie through Alien control parameters; 3/5/8 rivals; stable simple contact; grid/lights; standings and measured common-progress gaps; bounded timings and classification/results. Fixed focus regression exposed by browser checks. Deployment permission failure documented separately from local functional gates.
+
+## Phase 3 — dynamics
+Replaced foundation steering approximation with force/yaw integration, four tire loads, combined force limits, transfer, automatic engine/gear model, functional setup/compound/livery selections, bounded ERS and eligible DRS flap/aero. Published numerical/model limitations; fixed AI regressions before advancing.
