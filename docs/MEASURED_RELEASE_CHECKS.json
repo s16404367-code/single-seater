@@ -1,0 +1,33 @@
+{
+  "environment": "Linux x64 / packaged Chromium 141 / software SwiftShader / 960x640 Low / 9 cars",
+  "perf": {
+    "frames": 60,
+    "meanMs": 177.0900000000062,
+    "p95Ms": 274.10000000009313,
+    "drawCalls": 84,
+    "triangles": 42460,
+    "geometries": 97,
+    "textures": 6,
+    "pixelRatio": 0.85,
+    "renderer": "WebKit WebGL"
+  },
+  "memory": [
+    34,
+    42,
+    43,
+    43,
+    43,
+    43,
+    43
+  ],
+  "checks": [
+    "malformed save",
+    "artifact match",
+    "bounded restart geometry",
+    "blur pause",
+    "context loss",
+    "blocked storage",
+    "WebGL unavailable",
+    "manifest failure"
+  ]
+}

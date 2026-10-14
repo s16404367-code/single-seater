@@ -22,3 +22,6 @@ Functional saved garage trim/bias, bounded/validated local lap telemetry, speed/
 
 ## Phase 7
 Time Trial/Hot Lap, three-round locally saved championship, deterministic score/tie-break rules, ghost playback, configurable keyboard controls, standard gamepad adapter and experimental touch, visible accessibility controls and scoped confirmed save deletion. Tested physical simulation through all championship rounds, input remapping in browser and ghost isolation.
+
+## Phase 8 — 0.8.0 release candidate
+Release regression and source formatting, defensive saves/options/state, valid-lap telemetry reset, finish-state freeze, honest final-byte manifest and artifact verifier, bundle splitting, diffuse Low preset, static/vehicle instancing, browser failure injection, repeat-session allocation/performance measurement. CI separates build evidence from unavailable Pages publication. Release stays partial until hosting permissions and real-device performance/browser validation are resolved.

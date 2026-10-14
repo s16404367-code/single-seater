@@ -9,6 +9,9 @@
 |5 environment/damage|Local gate PASS|Meaningful wetting/damage; graphics and recovery regression|
 |6 garage/telemetry|Local gate PASS|Functional adjustments, bounded data, explainable local tips|
 |7 modes/accessibility|Local gate PASS; physical device tests NOT TESTED|Scoring, saves, ghost, input/accessibility tests|
-|8 release|In progress; public deployment BLOCKED|Full regression, clean build, licenses, deployment and limitations|
+|8 release|Local regression PASS; release PARTIAL / public deployment BLOCKED|Full regression, clean build, licenses, deployment and limitations|
 
 Each phase updates this record with evidence. The original pack's approval pauses are superseded by the owner's latest explicit instruction; quality gates are not. Optional innovations remain deferred unless included with tests. Real-device gamepad/touch, real-GPU frame rate, and owner deployment testing cannot be invented.
+
+## Release boundary
+See [ACCEPTANCE_STATUS.md](ACCEPTANCE_STATUS.md) for partial systems, model approximations and untested hardware. Phase-local PASS is not a claim that all aspirational specifications or production deployment are complete. Final release awaits Pages enablement and real-device/browser/performance review.

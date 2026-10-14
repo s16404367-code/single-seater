@@ -1,10 +1,70 @@
-import {chromium as playwright} from 'playwright-core';
+import { chromium as playwright } from 'playwright-core';
 import chromium from '@sparticuz/chromium';
-import {inflate} from '../node_modules/@sparticuz/chromium/build/cjs/lambdafs.cjs';
+import { inflate } from '../node_modules/@sparticuz/chromium/build/cjs/lambdafs.cjs';
 import assert from 'node:assert/strict';
-await inflate('./node_modules/@sparticuz/chromium/bin/al2023.tar.br');process.env.LD_LIBRARY_PATH='/tmp/al2023/lib:'+(process.env.LD_LIBRARY_PATH||'');
-const browser=await playwright.launch({executablePath:await chromium.executablePath(),args:chromium.args,headless:true});const page=await browser.newPage({viewport:{width:1024,height:768}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>localStorage.setItem('apex:quality','"low"'));await page.goto('http://127.0.0.1:4173/single-seater/?test=1');await page.waitForFunction(()=>window.__APEX__?.world.frame>2);
-await page.click('#settings-open');await page.check('#high-contrast');await page.check('#color-friendly');await page.check('#touch-enabled');await page.selectOption('#hud-scale','1.15');await page.locator('summary').click();await page.click('[data-action="throttle"]');await page.keyboard.press('KeyS');assert((await page.locator('#binding-status').textContent()).includes('Already'));await page.click('[data-action="throttle"]');await page.keyboard.press('KeyI');assert.equal(await page.locator('[data-action="throttle"]').textContent(),'KeyI');await page.click('#settings-close');await page.click('[data-mode="timeTrial"]');await page.click('#start');await page.keyboard.down('KeyI');await page.waitForFunction(()=>window.__APEX__.race.time>1);await page.keyboard.up('KeyI');assert(await page.evaluate(()=>window.__APEX__.race.cars[0].speed)>3);assert(await page.locator('body').evaluate(e=>e.classList.contains('high-contrast')));
-await page.evaluate(()=>{const a=window.__APEX__,c=a.race.cars[0];a.race.telemetry.best={version:1,key:'renderer-test',time:100,samples:[{t:0,x:c.x+3,z:c.z,heading:c.heading,s:c.distance},{t:100,x:c.x+3,z:c.z+100,heading:c.heading,s:c.distance+100}]};a.race.timers[0].started=true;});await page.waitForFunction(()=>window.__APEX__.world.ghost?.visible);assert.equal(await page.evaluate(()=>window.__APEX__.race.cars.length),1);
-const key=page.locator('[data-touch="throttle"]');await key.dispatchEvent('pointerdown',{pointerId:1});assert.equal(await page.evaluate(()=>window.__APEX__.controls.touch.throttle),1);await key.dispatchEvent('pointercancel',{pointerId:1});assert.equal(await page.evaluate(()=>window.__APEX__.controls.touch.throttle),0);await page.setViewportSize({width:390,height:844});await page.screenshot({path:'test-artifacts/accessibility-mobile.png'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-await page.reload();await page.waitForFunction(()=>window.__APEX__?.world.frame>2);assert.equal(await page.evaluate(()=>window.__APEX__.controls.mapping.throttle),'KeyI');assert(await page.locator('body').evaluate(e=>e.classList.contains('high-contrast')));assert.deepEqual(errors,[]);await browser.close();console.log('PASS keyboard remapping/conflicts/persistence, color/contrast/HUD scaling, touch pointer cancellation, mobile layout. Physical gamepad/touch NOT TESTED.');
+await inflate('./node_modules/@sparticuz/chromium/bin/al2023.tar.br');
+process.env.LD_LIBRARY_PATH = '/tmp/al2023/lib:' + (process.env.LD_LIBRARY_PATH || '');
+const browser = await playwright.launch({
+  executablePath: await chromium.executablePath(),
+  args: chromium.args,
+  headless: true,
+});
+const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
+const errors = [];
+page.on('pageerror', (e) => errors.push(e.message));
+await page.addInitScript(() => localStorage.setItem('apex:quality', '"low"'));
+await page.goto('http://127.0.0.1:4173/single-seater/?test=1');
+await page.waitForFunction(() => window.__APEX__?.world.frame > 2);
+await page.click('#settings-open');
+await page.check('#high-contrast');
+await page.check('#color-friendly');
+await page.check('#touch-enabled');
+await page.selectOption('#hud-scale', '1.15');
+await page.locator('summary').click();
+await page.click('[data-action="throttle"]');
+await page.keyboard.press('KeyS');
+assert((await page.locator('#binding-status').textContent()).includes('Already'));
+await page.click('[data-action="throttle"]');
+await page.keyboard.press('KeyI');
+assert.equal(await page.locator('[data-action="throttle"]').textContent(), 'KeyI');
+await page.click('#settings-close');
+await page.click('[data-mode="timeTrial"]');
+await page.click('#start');
+await page.keyboard.down('KeyI');
+await page.waitForFunction(() => window.__APEX__.race.time > 1);
+await page.keyboard.up('KeyI');
+assert((await page.evaluate(() => window.__APEX__.race.cars[0].speed)) > 3);
+assert(await page.locator('body').evaluate((e) => e.classList.contains('high-contrast')));
+await page.evaluate(() => {
+  const a = window.__APEX__,
+    c = a.race.cars[0];
+  a.race.telemetry.best = {
+    version: 1,
+    key: 'renderer-test',
+    time: 100,
+    samples: [
+      { t: 0, x: c.x + 3, z: c.z, heading: c.heading, s: c.distance },
+      { t: 100, x: c.x + 3, z: c.z + 100, heading: c.heading, s: c.distance + 100 },
+    ],
+  };
+  a.race.timers[0].started = true;
+});
+await page.waitForFunction(() => window.__APEX__.world.ghost?.visible);
+assert.equal(await page.evaluate(() => window.__APEX__.race.cars.length), 1);
+const key = page.locator('[data-touch="throttle"]');
+await key.dispatchEvent('pointerdown', { pointerId: 1 });
+assert.equal(await page.evaluate(() => window.__APEX__.controls.touch.throttle), 1);
+await key.dispatchEvent('pointercancel', { pointerId: 1 });
+assert.equal(await page.evaluate(() => window.__APEX__.controls.touch.throttle), 0);
+await page.setViewportSize({ width: 390, height: 844 });
+await page.screenshot({ path: 'test-artifacts/accessibility-mobile.png' });
+assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+await page.reload();
+await page.waitForFunction(() => window.__APEX__?.world.frame > 2);
+assert.equal(await page.evaluate(() => window.__APEX__.controls.mapping.throttle), 'KeyI');
+assert(await page.locator('body').evaluate((e) => e.classList.contains('high-contrast')));
+assert.deepEqual(errors, []);
+await browser.close();
+console.log(
+  'PASS keyboard remapping/conflicts/persistence, color/contrast/HUD scaling, touch pointer cancellation, mobile layout. Physical gamepad/touch NOT TESTED.',
+);

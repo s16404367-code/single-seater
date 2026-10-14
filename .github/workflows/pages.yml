@@ -1,7 +1,7 @@
 name: Test and deploy APEX GP
 on:
   push:
-    branches: [arena/41d1170c-single-seater]
+    branches: [main, arena/41d1170c-single-seater]
   workflow_dispatch:
 permissions:
   contents: read
@@ -13,6 +13,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      pages_ready: ${{ steps.pages-status.outputs.ready }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,17 +24,45 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - uses: actions/configure-pages@v5
+      - name: Production browser and accessibility checks
+        run: |
+          npm run preview -- --port 4173 &
+          PREVIEW_PID=$!
+          trap 'kill "$PREVIEW_PID"' EXIT
+          node scripts/wait-for-server.mjs
+          npm run test:browser
+          npm run test:accessibility
+          npm run test:release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-evidence
+          path: test-artifacts/
+          retention-days: 14
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      - name: Check Pages configuration without claiming deployment
+        id: pages-status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if READY=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.build_type == "workflow"'); then
+            echo "ready=$READY" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Pages not configured or not accessible. Enable Settings > Pages > GitHub Actions, then rerun. Build/artifact verification is independent of publication."
+            echo "### Deployment BLOCKED: enable GitHub Pages (GitHub Actions source). The static artifact and verification evidence were uploaded; no public deployment is claimed." >> "$GITHUB_STEP_SUMMARY"
+          fi
   deploy:
     needs: build
+    if: needs.build.outputs.pages_ready == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/configure-pages@v5
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
