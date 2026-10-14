@@ -19,3 +19,6 @@ Four lighting/weather modes, progressive shared wetness and meaningful aero dama
 
 ## Phase 6
 Functional saved garage trim/bias, bounded/validated local lap telemetry, speed/reference and sector panel, measured delta utility and optional explainable rule-based engineer. Tested actual completed lap records and storage failure.
+
+## Phase 7
+Time Trial/Hot Lap, three-round locally saved championship, deterministic score/tie-break rules, ghost playback, configurable keyboard controls, standard gamepad adapter and experimental touch, visible accessibility controls and scoped confirmed save deletion. Tested physical simulation through all championship rounds, input remapping in browser and ghost isolation.
