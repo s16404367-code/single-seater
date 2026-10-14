@@ -16,3 +16,6 @@ GP weekend with qualifying grid, time penalties, flags/virtual safety car, share
 
 ## Phase 5
 Four lighting/weather modes, progressive shared wetness and meaningful aero damage, rain/spray/rear light, low-quality budgets, original track floodlights. Batch static meshes to reduce draw overhead. Verified wet-race regression and browser views.
+
+## Phase 6
+Functional saved garage trim/bias, bounded/validated local lap telemetry, speed/reference and sector panel, measured delta utility and optional explainable rule-based engineer. Tested actual completed lap records and storage failure.

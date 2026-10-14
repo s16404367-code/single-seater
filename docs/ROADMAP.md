@@ -7,8 +7,8 @@
 |3 dynamics|Local simplified-model gate PASS|Force, tire, aero, energy and wet tests; AI regression|
 |4 race weekend|Local simplified-rules gate PASS|Session, rules, flags, pits, classification tests|
 |5 environment/damage|Local gate PASS|Meaningful wetting/damage; graphics and recovery regression|
-|6 garage/telemetry|In progress|Functional adjustments, bounded data, explainable local tips|
-|7 modes/accessibility|Not started|Scoring, saves, ghost, input/accessibility tests|
+|6 garage/telemetry|Local gate PASS|Functional adjustments, bounded data, explainable local tips|
+|7 modes/accessibility|In progress|Scoring, saves, ghost, input/accessibility tests|
 |8 release|Not started|Full regression, clean build, licenses, deployment and limitations|
 
 Each phase updates this record with evidence. The original pack's approval pauses are superseded by the owner's latest explicit instruction; quality gates are not. Optional innovations remain deferred unless included with tests. Real-device gamepad/touch, real-GPU frame rate, and owner deployment testing cannot be invented.

@@ -15,3 +15,6 @@ Real pit branch is an estimated5m-wide ribbon at offset−15m from the shared ce
 
 ## Phase 5 environment
 Shared global wetness evolves from rain/drying, supplied to every car and AI. Not per-sector puddles or aquaplaning. Four renderer modes have actual sky/fog/light changes; night uses nearby track-light pools (no race-car headlights), rain has capped particles/spray, wet material and blinking rear light. Aggregate wing damage from impacts over8m/s reduces total/front aero and visibly shrinks the front wing; no suspension/puncture/engine-damage claims. Pit service repairs it. Static kerbs/pit strips and car body components are merged by material; repeated rails/trees instanced.
+
+## Phase 6 local data
+Aero trim scales base downforce and drag; brake bias distributes real braking force. Applied next session and stored locally. Telemetry samples10Hz, max6000 per lap; truncated/invalid laps never saved as references. Record key includes circuit, physics version, package, compound, environment preset and trim. Eight recent configuration bests maximum; data schema/finite-number validation and storage-failure handling. Distance-aligned sampled delta, speed trace and actual sectors; no invented exact corner-loss analysis. Engineer priority rules explicitly cite measured damage, wetness, wear, temperature, energy or slip-angle thresholds; optional and offline.
