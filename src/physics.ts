@@ -23,7 +23,7 @@ export function stepCar(c:Car,input:Input,dt:number,t:Track=track){
  const boost=c.ersActive?120000:0;c.battery=clamp(c.battery+(input.brake*55000-boost)*dt,0,4000000);
  const wheelRpm=speed/.38*60/(2*Math.PI);c.rpm=clamp(wheelRpm*ratios[c.gear]*6.4,4000,13500);if(c.rpm>12100&&c.gear<8)c.gear++;else if(c.rpm<7200&&c.gear>1)c.gear--;c.rpm=clamp(wheelRpm*ratios[c.gear]*6.4,4000,13500);
  const power=c.setup.power*(.65+.35*Math.sin(clamp((c.rpm-4000)/9500,0,1)*Math.PI*.85));const engine=input.reverse?-MASS*5:input.throttle*Math.min(13000,(power+boost)/Math.max(15,speed))*(c.rpm>=13450?0:1);
- const drag=aero(c,speed);const totalLoad=MASS*9.81+drag.downforce;const frontStatic=MASS*9.81*LR/(LF+LR)+drag.downforce*c.setup.frontBalance;
+ const drag=aero(c,speed);const totalLoad=MASS*9.81+drag.downforce;const frontStatic=MASS*9.81*LR/(LF+LR)+drag.downforce*c.setup.frontBalance*(1-c.damage*.35);
  const frontLoad=clamp(frontStatic-MASS*c.ax*.32/(LF+LR),totalLoad*.18,totalLoad*.8);const rearLoad=totalLoad-frontLoad;
  const transfer=clamp(MASS*c.ay*.32/1.85,-totalLoad*.22,totalLoad*.22);
  const compound=compounds[c.compound];let fx=0,fy=0,moment=0;

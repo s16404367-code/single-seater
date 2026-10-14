@@ -13,3 +13,6 @@ Replaced foundation steering approximation with force/yaw integration, four tire
 
 ## Phase 4
 GP weekend with qualifying grid, time penalties, flags/virtual safety car, shared-geometry pit lane, limiter/service/compound changes and tested AI pit entry/exit. Published simplified rules in settings and architecture.
+
+## Phase 5
+Four lighting/weather modes, progressive shared wetness and meaningful aero damage, rain/spray/rear light, low-quality budgets, original track floodlights. Batch static meshes to reduce draw overhead. Verified wet-race regression and browser views.

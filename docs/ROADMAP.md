@@ -6,8 +6,8 @@
 |2 racing/AI|Local gate PASS|3/5/8 independent rivals, full race, contact, timing, passing|
 |3 dynamics|Local simplified-model gate PASS|Force, tire, aero, energy and wet tests; AI regression|
 |4 race weekend|Local simplified-rules gate PASS|Session, rules, flags, pits, classification tests|
-|5 environment/damage|In progress|Meaningful wetting/damage; graphics and recovery regression|
-|6 garage/telemetry|Not started|Functional adjustments, bounded data, explainable local tips|
+|5 environment/damage|Local gate PASS|Meaningful wetting/damage; graphics and recovery regression|
+|6 garage/telemetry|In progress|Functional adjustments, bounded data, explainable local tips|
 |7 modes/accessibility|Not started|Scoring, saves, ghost, input/accessibility tests|
 |8 release|Not started|Full regression, clean build, licenses, deployment and limitations|
 
