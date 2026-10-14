@@ -1,0 +1,17 @@
+import {chromium as playwright} from 'playwright-core';
+import chromium from '@sparticuz/chromium';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {inflate} from '../node_modules/@sparticuz/chromium/build/cjs/lambdafs.cjs';
+await inflate('./node_modules/@sparticuz/chromium/bin/al2023.tar.br');
+process.env.LD_LIBRARY_PATH='/tmp/al2023/lib:'+ (process.env.LD_LIBRARY_PATH||'');
+await mkdir('test-artifacts',{recursive:true});
+const browser=await playwright.launch({executablePath:await chromium.executablePath(),args:chromium.args,headless:true});
+const page=await browser.newPage({viewport:{width:1440,height:900}});const errors=[],bad=[];page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400)bad.push(`${r.status()} ${r.url()}`);});
+const base=process.env.TEST_URL||'http://127.0.0.1:4173/single-seater/';
+await page.goto(base+'?test=1',{waitUntil:'networkidle'});await page.waitForFunction(()=>window.__APEX__?.world.frame>3);assert.equal(await page.locator('#error').isVisible(),false);
+await page.screenshot({path:'test-artifacts/paddock.png'});await page.click('#start');await page.keyboard.down('KeyW');await page.waitForTimeout(2500);await page.keyboard.up('KeyW');const speed=await page.evaluate(()=>window.__APEX__.race.cars[0].speed);assert(speed>5,`speed ${speed}`);await page.screenshot({path:'test-artifacts/driving.png'});
+await page.keyboard.press('Escape');assert.equal(await page.locator('#pause').isVisible(),true);const time=await page.evaluate(()=>window.__APEX__.race.time);await page.waitForTimeout(250);assert.equal(await page.evaluate(()=>window.__APEX__.race.time),time);await page.click('#resume');
+await page.keyboard.press('KeyC');await page.keyboard.press('KeyR');await page.click('#settings-open');await page.selectOption('#settings-quality','low');await page.click('#settings-close');assert.equal(await page.evaluate(()=>window.__APEX__.world.renderer.shadowMap.enabled),false);
+await page.setViewportSize({width:390,height:844});await page.screenshot({path:'test-artifacts/mobile.png'});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);await writeFile('test-artifacts/browser-report.json',JSON.stringify({base,speed,errors,bad,browser:await browser.version(),renderer:await page.evaluate(()=>window.__APEX__.world.renderer.getContext().getParameter(7937))},null,2));await browser.close();console.log('PASS browser: rendered, drove, paused/resumed, camera, recovery, low quality, resized; no runtime/HTTP errors');

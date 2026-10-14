@@ -1,0 +1,6 @@
+node_modules/
+dist/
+coverage/
+test-artifacts/
+*.local
+.DS_Store
