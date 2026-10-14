@@ -11,3 +11,11 @@ PASS: `npm run test:browser`: Chromium 141, software Vulkan/SwiftShader, 1440x90
 PASS: npm audit after upgrading vulnerable Vitest dependency to 5.0.4: zero vulnerabilities.
 NOT TESTED: real Intel HD 4400 performance, physical mobile/controller devices. Manual full lap not claimed; full lap physics run uses test driver. Existing historical production graphics bug is not reproducible because old code was deleted.
 Deployment work follows before phase closure.
+
+## Deployment permission boundary
+Source push 8145902 succeeded. POST /repos/s16404367-code/single-seater/pages with build_type=workflow returned 403 Resource not accessible by integration despite repository metadata admin=true. GitHub Actions run 38551189861 failed; logs redirect to a host unavailable from this workspace. No public Pages success claimed. Owner must enable Settings → Pages → GitHub Actions (and if necessary allow session branch in github-pages environment). Local production-subpath verification passed. This external release blocker does not prevent testing independent local phase functionality, but final published acceptance remains BLOCKED.
+
+## Phase 2 — racing
+PASS: 12 tests total. Full one-lap races (player driven through the same input interface by a test driver), all 4/6/9 cars finish: 101.94 / 102.75 / 104.69 simulation seconds. Maximum per-step movement ~0.5365m, no AI off-track time in these runs. Contacts counted in traffic, no frozen/embedded cars. Dedicated side/rear contact, overtaking and off-track 180-degree spin recovery tests pass. Start grid does not move for first five seconds. Ordered progress and common-coordinate gap regression pass.
+PASS: typecheck/build and production Chromium browser regression, including selecting eight rivals, lights-out and rendered nine-car scene. Browser found keyboard focus retained after settings/resume; fixed global Escape and explicitly restored driving focus, then reran successfully. Screenshots and ignored raw logs in test-artifacts.
+Limits: elementary line tactics, equal-mass two-circle contacts, no proprietary human-like race intelligence. Crossings history currently bounded to recent data; unavailable gaps display dash, not fabricated values. Published deployment remains BLOCKED as above.

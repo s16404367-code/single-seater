@@ -2,7 +2,7 @@ import {type Track,track} from './track';
 import {mod} from './math';
 export class LapTimer {
   laps=0; elapsed=0;current=0;last=0;best=Infinity;total=0;lastS:number; nextGate=1; valid=true;started=false;sectors:number[]=[];lastSectors:number[]=[];sectorAt=0;crossings:{s:number;time:number}[]=[];
-  constructor(s=0,public t:Track=track){this.lastS=s;}
+  constructor(s=0,public t:Track=track){this.lastS=s;this.total=s>t.length*.9?s-t.length:s;}
   invalidate(){this.valid=false;}
   update(s:number,dt:number,onTrack=true){
     this.elapsed+=dt; if(this.started)this.current+=dt;
